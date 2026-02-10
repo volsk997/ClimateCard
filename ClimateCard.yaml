@@ -24,7 +24,7 @@ cards:
             icon: mdi:power
             icon_color: |-
               {% if is_state(config.entity, 'on')%} red
-              {% else %} disabled
+              {% else %} 1
               {% endif %}
             tap_action:
               action: toggle
@@ -35,9 +35,13 @@ cards:
             entity: fan.ac_switch
             card_mod:
               style: |
+                ha-card {
+                  opacity: 0.4 }   
                 ha-card:hover {
-                  --chip-background: rgba(var(--rgb-primary-text-color), 0.1);
-                  }
+                  opacity: 1 }     
+                ha-card:active {
+                  scale: 0.8;
+                }  
           - type: conditional
             conditions:
               - condition: user
@@ -63,11 +67,19 @@ cards:
                 {{ y}} мин
                 {% endif %}
               icon: mdi:fan-clock
-              icon_color: disabled
+              card_mod:
+                style: |
+                  ha-card {
+                    opacity: 0.4 }   
+                  ha-card:hover {
+                    opacity: 1 }     
+                  ha-card:active {
+                    scale: 0.8;
+                  }  
           - type: spacer
           - type: template
             tap_action:
-              action: none
+              action: more-info
             hold_action:
               action: none
             double_tap_action:
@@ -77,10 +89,18 @@ cards:
             content: >-
               {{states('sensor.ble_temperature_a4c1387e6730')| replace (".",",")
               }}°
-            icon_color: disabled
+            card_mod:
+              style: |
+                ha-card {
+                  opacity: 0.4 }   
+                ha-card:hover {
+                  opacity: 1 }     
+                ha-card:active {
+                  scale: 0.8;
+                }  
           - type: template
             tap_action:
-              action: none
+              action: more-info
             hold_action:
               action: none
             double_tap_action:
@@ -88,7 +108,15 @@ cards:
             entity: sensor.ble_humidity_a4c1387e6730
             content: "{{states(config.entity)| replace (\".\",\",\") }}%"
             icon: mdi:water
-            icon_color: disabled
+            card_mod:
+              style: |
+                ha-card {
+                  opacity: 0.4 }   
+                ha-card:hover {
+                  opacity: 1 }     
+                ha-card:active {
+                  scale: 0.8;
+                }  
           - type: conditional
             conditions:
               - condition: state
@@ -113,7 +141,10 @@ cards:
                   {% endif %}
                 {% else %} 
                 {% endif %}
-              icon_color: disabled
+              card_mod:
+                style: |
+                  ha-card {
+                    opacity: 0.4 }   
           - type: template
             icon: mdi:information
             tap_action:
@@ -123,42 +154,21 @@ cards:
             double_tap_action:
               action: none
             entity: climate.ac_fan
-            icon_color: disabled
             card_mod:
               style: |
+                ha-card {
+                  opacity: 0.4 }   
                 ha-card:hover {
-                  --chip-background: rgba(var(--rgb-primary-text-color), 0.1);
-                  }
+                  opacity: 1 }     
+                ha-card:active {
+                  scale: 0.8;
+                }  
         alignment: start
         card_mod:
           style: |
-            ha-card {
-              opacity:1000%;
-              --chip-height: 50px;
-              --chip-background: none;
-              --chip-border-radius: 50px;
-              --primary-text-color: rgba(var(--rgb-disabled)); ;
-
-              background-color: transparent !important;
-              }
-            ha-card:hover {
-               opacity: 100%; }
-            ha-card > .chip-container {
-              flex-wrap: nowrap;
-              overflow-x: scroll;
-              overflow-y: hidden;
-              --chip-spacing: 0px;
-              --chip-height: 45px;
-              --chip-font-weight: bolder; 
-
-              padding-bottom: 40px;
-              padding-right: 10px;
-              padding-top: 10px;
-              margin-bottom: 20px;
-            }
-            ha-card > .chip-container > * {
-              flex-shrink: 0;
-            }
+            {% set top = 7 %}
+            {% set chip_height = 48 %}
+            {% include 'title_chips_scrollable.jinja' %}
     card_mod:
       style: |
         ha-card {
@@ -167,8 +177,9 @@ cards:
           top: 100px !important;
           left: calc(50vw + var(--mdc-drawer-width, 0px)/2) !important;
           transform: translateX(-50%) !important;
-          width: calc(100% - 40px) !important;
+          width: calc(90vw - var(--mdc-drawer-width, 0px)) !important;
           max-width: 950px !important;
+          min-width: 450px !important;
           height: calc(100% - 40px) !important;
           max-height: 60px !important;  /* 30px - отступ от краёв */
           min-height: 50px !important;  /* Минимальная высота */
@@ -234,241 +245,24 @@ cards:
             fill_container: true
             card_mod:
               style: |
-                ha-card:before {
-                  transform: translate3d(0,0,0);
-                  -webkit-transform: translate3d(0,0,0);
-                  content: "";
-                  background: url('/local/cards_img/ac2.png') center no-repeat;
-                  
-                  background-size: cover;
-                  margin: 0px 0px -20px 0px;
-                  aspect-ratio: 1 / 1; 
-                  border-radius: 30px;
-                  }
-                ha-card {
-                  border-radius: 30px; 
-                  border: 2px outset rgba(0,0,0,0);}
-                  border-width: 0px;
-          - type: custom:stack-in-card
-            cards:
-              - type: custom:stack-in-card
-                cards:
-                  - type: custom:mushroom-template-card
-                    primary: |+
+                {% set domain = '' %}
+                {% set file = '/local/cards_img/ac2.png' %}
+                {% set entity = 'climate.ac_fan' %}
+                {% set state_off = 'off' %}
 
-                    secondary: ""
-                    icon: ""
-                    entity: media_player.yandex_station_m00en2100jayck
-                    picture: ""
-                    badge_icon: ""
-                    badge_color: ""
-                    layout: vertical
-                    icon_color: ""
-                    tap_action:
-                      action: more-info
-                    double_tap_action:
-                      action: none
-                    fill_container: true
-                    card_mod:
-                      style: |
-                        ha-card:before {
-                          transform: translate3d(0,0,0);
-                          -webkit-transform: translate3d(0,0,0);
-                          
-                          content: "";
-                          background: url('/local/cards_img/ac2.png') center no-repeat;
-                          filter:  opacity(50%)  !important;
-                          background-size: cover;
-                          margin: 0px 0px -20px 0px;
-                          filter: blur(0px) saturate(100%) brightness(50%);
-                          aspect-ratio: 1 / 1; 
-                          border-radius: 30px;
-                          }
-                        ha-card {
-                          border-radius: 30px; 
-                          border: 2px outset rgba(0,0,0,0);}
-                          border-width: 0px;
-                card_mod:
-                  style: |
-                    ha-card {
-                      border-radius: 35px;
-                    }
-              - type: custom:mushroom-chips-card
-                chips:
-                  - type: spacer
-                  - type: template
-                    icon_color: |-
-                      {% if is_state('climate.ac_fan','cool')%} blue
-                      {% else %} '1'
-                      {% endif %}
-                    icon: mdi:snowflake
-                    tap_action:
-                      action: perform-action
-                      perform_action: climate.set_hvac_mode
-                      target:
-                        entity_id: climate.ac_fan
-                      data:
-                        hvac_mode: cool
-                    hold_action:
-                      action: none
-                    double_tap_action:
-                      action: none
-                    card_mod:
-                      style: |
-                        ha-card {
-                          --chip-padding: -20px;
-                          background: 
-                          {% if is_state('climate.ac_fan', 'cool') %} rgba(255,255,255,1) !important;
-                          {% else %}rgba(var(--rgb-card-background-color), 0.5) !important;
-                          {% endif %}
-                          backdrop-filter: blur(10px) !important;
-                          -webkit-backdrop-filter: blur(10px) !important; /* Для Safari */
-                          box-shadow: 0px 20px 40px 5px rgba(0, 0, 0, 0.7) !important;
-                          border: 1px solid var(--ha-card-border-color, rgba(var(--rgb-primary-text-color),0.1)) !important;
-                          display: flex !important;
-                          flex-direction: column !important;
-                          justify-content: center !important;
-                          align-items: center !important;
-                            /* Анимация */
-                          transition: all 0.3s ease !important;
-                          }
-                        ha-card:hover {
-                          scale: 1.1;
-                          }
-                  - type: spacer
-                  - type: template
-                    entity: fan.ac_switch
-                    tap_action:
-                      action: toggle
-                    hold_action:
-                      action: none
-                    double_tap_action:
-                      action: none
-                    icon: mdi:power
-                    icon_color: |2-
-                        {% if is_state('fan.ac_switch', 'on')%} 
-                           {% if is_state('climate.ac_fan','cool')%} blue
-                           {% elif is_state('climate.ac_fan','heat')%} red
-                           {% endif %}
-                        {% else %} 1
-                        {% endif %}
-                    card_mod:
-                      style: |
-                        ha-card {
-                          margin: -55px 0px 0px 0px;
-                          --chip-height: 220px;  /* Значение для ПК */
-                          --chip-padding: -20px;
-                          background: 
-                          {% if is_state('fan.ac_switch', 'on') %} rgba(255,255,255,1) !important;;
-                          {% else %}rgba(var(--rgb-card-background-color), 0.5) !important;
-                          {% endif %}
-                          backdrop-filter: blur(10px) !important;
-                          -webkit-backdrop-filter: blur(10px) !important;
-                          box-shadow: 0px 20px 40px 5px rgba(0, 0, 0, 0.7) !important;
-                          border: 1px solid var(--ha-card-border-color, rgba(var(--rgb-primary-text-color),0.1)) !important;
-                          display: flex !important;
-                          flex-direction: column !important;
-                          justify-content: center !important;
-                          align-items: center !important;
-                          transition: all 0.3s ease !important;
-                          }
-                        ha-card:hover {
-                          scale: 1.1;
-                          }
-
-                          /* Для мобильных (ширина экрана ≤ 600px) */
-                        @media (max-width: 1150px) {
-                          ha-card {
-                            --chip-height: 125px !important;
-                            margin: -30px 0px 0px 0px;
-                            }
-                        }
-                  - type: spacer
-                  - type: template
-                    icon: mdi:fire
-                    icon_color: |-
-                      {% if is_state('climate.ac_fan','heat')%} red
-                      {% else %} '1'
-                      {% endif %}
-                    tap_action:
-                      action: perform-action
-                      perform_action: climate.set_hvac_mode
-                      target:
-                        entity_id: climate.ac_fan
-                      data:
-                        hvac_mode: heat
-                    hold_action:
-                      action: none
-                    double_tap_action:
-                      action: none
-                    card_mod:
-                      style: |
-                        ha-card {
-                          --chip-padding: -20px;
-                          /* Визуальные стили ha-card */
-                          background: 
-                          {% if is_state('climate.ac_fan', 'heat') %} rgba(255,255,255,1) !important;
-                          {% else %}rgba(var(--rgb-card-background-color), 0.5) !important;
-                          {% endif %}
-                          backdrop-filter: blur(10px) !important;
-                          -webkit-backdrop-filter: blur(10px) !important; /* Для Safari */
-                          box-shadow: 0px 20px 40px 5px rgba(0, 0, 0, 0.7) !important;
-                          border: 1px solid var(--ha-card-border-color, rgba(var(--rgb-primary-text-color),0.1)) !important;
-                          display: flex !important;
-                          flex-direction: column !important;
-                          justify-content: center !important;
-                          align-items: center !important;
-                            /* Анимация */
-                          transition: all 0.3s ease !important;
-                        }
-                        ha-card:hover {
-                          scale: 1.1;
-                          }
-                  - type: spacer
-                alignment: center
-                card_mod:
-                  style: |
-                    ha-card {
-                      margin: 20px 12px 20px 12px;
-                      --chip-border-radius: 100%;
-                      --chip-spacing: 25px;
-                      position: absolute !important;
-                      left: 0px;
-                      right: 0px;
-                      top: 53% !important;
-                      transform: translate(0%, -70%);
-                      background-color: none !important;
-                      --chip-height: 110px; /* Значение по умолчанию (для ПК) */
-                      }
-                      /* Для узких экранов (телефонов) */
-                    @media (max-width: 1150px) {
-                      ha-card {
-                        --chip-height: 65px !important;
-                        top: 50% !important;
-                      }
-                    }
-            card_mod:
-              style: |
-                ha-card {
-                  opacity:0%;
-                  --chip-height: 50px;
-                  --chip-background: transparent !important;
-                  --chip-border-radius: 30px;
-                  position: absolute !important;
-                  border-radius: 30px;
-                  top: 0px !important;
-                  left: 0px;
-                  right: 0px;
-                  background-color: transparent !important;
-                  
-                  }
-                ha-card:hover {
-                   opacity: 100%; }
+                {% include 'cover_card_cover.jinja' %}
           - type: custom:mushroom-template-card
             primary: Кондиционер
-            secondary: >-
-              {{state_translated(config.entity)}} • {{state_attr(config.entity,
-              'temperature')}}°
+            secondary: |-
+              {% if is_state(config.entity, 'off') %} Выключен
+              {% else %}
+                {% if states(config.entity) in ['unknown', 'unavailable', 'none']  %}
+                {% elif is_state(config.entity, 'cool') %} Охлаждение
+                {% elif is_state(config.entity, 'heat') %} Обогрев
+                {% elif is_state(config.entity, 'auto') %} Авторежим
+                {% elif is_state(config.entity, 'on') %} Включен
+                {% endif %} 
+              {% endif %} • {{state_attr(config.entity, 'temperature')}}°
             icon: ""
             entity: climate.ac_fan
             picture: ""
@@ -486,13 +280,7 @@ cards:
             card_mod:
               style:
                 .: |
-                  ha-card { 
-                    margin-top: 20px;
-                    margin-bottom: 20px;
-                    margin-left: 0px;
-                    margin-right: 0px;
-                    background: none !important ;
-                    }
+                  {% include 'cover_device_name.jinja' %}
                 mushroom-state-info$: |
                   .container {
                    --card-secondary-font-size: 15px;
@@ -502,35 +290,110 @@ cards:
           - type: custom:mushroom-chips-card
             chips:
               - type: template
+                icon_color: |-
+                  {% if is_state('climate.ac_fan','cool')%} blue
+                  {% else %} '1'
+                  {% endif %}
+                icon: mdi:snowflake
                 tap_action:
-                  action: navigate
-                  navigation_path: "#climate"
-                icon: mdi:dots-horizontal
-                icon_color: disabled
+                  action: perform-action
+                  perform_action: climate.set_hvac_mode
+                  target:
+                    entity_id: climate.ac_fan
+                  data:
+                    hvac_mode: cool
                 hold_action:
                   action: none
                 double_tap_action:
                   action: none
                 card_mod:
-                  style: |
-                    ha-card:hover {
-                      --chip-background: rgba(var(--rgb-primary-text-color), 0.1);
-                      }
-            alignment: end
+                  style:
+                    .: |
+                      {% set hover = 'true' %}
+                      {% include 'button_opacity.jinja' %}
+              - type: template
+                entity: fan.ac_switch
+                tap_action:
+                  action: toggle
+                hold_action:
+                  action: none
+                double_tap_action:
+                  action: none
+                icon: mdi:power
+                icon_color: |2-
+                    {% if is_state('fan.ac_switch', 'on')%} 
+                       {% if is_state('climate.ac_fan','cool')%} blue
+                       {% elif is_state('climate.ac_fan','heat')%} red
+                       {% elif is_state('climate.ac_fan','on')%} indigo
+                       {% endif %}
+                    {% else %} 1
+                    {% endif %}
+                card_mod:
+                  style:
+                    .: |
+                      {% set hover = 'true' %}
+                      {% set icon_size = '1.5' %}
+                      {% include 'button_opacity.jinja' %}
+              - type: template
+                icon: mdi:fire
+                icon_color: |-
+                  {% if is_state('climate.ac_fan','heat')%} red
+                  {% else %} '1'
+                  {% endif %}
+                tap_action:
+                  action: perform-action
+                  perform_action: climate.set_hvac_mode
+                  target:
+                    entity_id: climate.ac_fan
+                  data:
+                    hvac_mode: heat
+                hold_action:
+                  action: none
+                double_tap_action:
+                  action: none
+                card_mod:
+                  style:
+                    .: |
+                      {% set hover = 'true' %}
+                      {% include 'button_opacity.jinja' %}
+            alignment: justify
+            card_mod:
+              style:
+                .: >
+                  {% set background_color =
+                  '1rgba(var(--rgb-primary-text-color), 0.1)' %}
+
+                  {% include 'cover_buttons_stack.jinja' %}
+          - type: custom:mushroom-chips-card
+            chips:
+              - type: template
+                tap_action:
+                  action: navigate
+                  navigation_path: "#climate"
+                icon: mdi:dots-horizontal
+                icon_color: "1"
+                hold_action:
+                  action: none
+                double_tap_action:
+                  action: none
+                card_mod:
+                  style:
+                    .: |
+                      {% set hover = 'true' %}
+                      {% set icon_size = '1.2' %}
+                      {% include 'button_opacity.jinja' %}
+            alignment: center
             layout_options:
               grid_columns: full
             card_mod:
-              style: |
-                ha-card {
-                  margin-top: 0px;
-                  --chip-font-size: 0.3em;
-                  --chip-icon-size: 0.55em;
-                  --chip-height: 55px;
-                  --chip-background: transparent;
-                  --chip-icon-size: 40px;
-                  --chip-padding: 8px;
-                  --chip-border-radius: 100px;
-                  --chip-spacing: 5px;
+              style:
+                .: |
+                  ha-card {
+                    --chip-background: none !important;
+                    --chip-border-radius: 1000px;
+                    --chip-height: 45px;
+                    --chip-spacing:0px;
+                    margin-top: 0px;
         grid_options:
           columns: 24
           rows: auto
@@ -703,23 +566,9 @@ cards:
                 card_mod:
                   style:
                     mushroom-shape-icon$: |
-                      .shape {
-                        --shape-color: none !important;
-                        --icon-symbol-size:28px;
-                        padding-right: 100px;
-
-                      }
+                      {% include 'bubble_card_icon.jinja' %}
                     .: |
-                      ha-card { 
-                        background-color: rgba(255,255,255,0) ;
-                      }  
-                      ha-state-icon {
-                          {% if is_state('fan.ac_switch','on') and is_state_attr('climate.ac_fan','fan_mode', 'auto')%}
-                          color: #171717;
-                          {% else %} color: rgba(var(--rgb-primary-text-color), 1);
-                          {% endif %}
-                        
-                      }
+                      {% include 'mushroom_ha_card_transparent.jinja' %}
               - type: custom:mushroom-template-card
                 primary: Авто
                 secondary: ""
@@ -744,34 +593,16 @@ cards:
                 card_mod:
                   style:
                     mushroom-state-info$: |
-                      .secondary {
-                        position: absolute;
-                        top: -10% !important;
-                        left: 10px;
-                        }
-                      .container {
-                       --card-secondary-font-size: 13.5px;
-                       --card-secondary-font-weight: bolder;
+                      {% include 'bubble_card_text.jinja' %}
                     .: |
-                      ha-card { 
-                        background-color: rgba(255,255,255,0) }};
-                      }  
+                      {% include 'mushroom_ha_card_transparent.jinja' %}
             card_mod:
               style:
                 .: |
-                  ha-card { 
-                      {% if is_state('fan.ac_switch','on') and is_state_attr('climate.ac_fan','fan_mode', 'auto')%}
-                      background-color: white;
-                      --primary-text-color: #171717;
-                      {% else %} background-color: rgba(var(--rgb-primary-text-color), 0.05);
-                      {% endif %}
-                      }
-                  ha-card:hover {
-                      {% if is_state('fan.ac_switch','on') and is_state_attr('climate.ac_fan','fan_mode', 'auto')%}
-                      {% else %} 
-                      background-color: rgba(var(--rgb-primary-text-color), 0.1);
-                      {% endif %}
-                  }  
+                  {% set entity = 'sensor.ac_fan_mode'%}
+                  {% set state_on = 'auto' %}
+
+                  {% include 'bubble_card_stack.jinja' %}
           - type: custom:vertical-stack-in-card
             cards:
               - type: custom:mushroom-template-card
@@ -798,23 +629,9 @@ cards:
                 card_mod:
                   style:
                     mushroom-shape-icon$: |
-                      .shape {
-                        --shape-color: none !important;
-                        --icon-symbol-size:28px;
-                        padding-right: 100px;
-
-                      }
+                      {% include 'bubble_card_icon.jinja' %}
                     .: |
-                      ha-card { 
-                        background-color: rgba(255,255,255,0) ;
-                      }  
-                      ha-state-icon {
-                          {% if is_state('fan.ac_switch','on') and is_state_attr('climate.ac_fan','fan_mode', 'low')%}
-                          color: #171717;
-                          {% else %} color: rgba(var(--rgb-primary-text-color), 1);
-                          {% endif %}
-                        
-                      }
+                      {% include 'mushroom_ha_card_transparent.jinja' %}
               - type: custom:mushroom-template-card
                 primary: Низкая
                 secondary: ""
@@ -839,34 +656,16 @@ cards:
                 card_mod:
                   style:
                     mushroom-state-info$: |
-                      .secondary {
-                        position: absolute;
-                        top: -10% !important;
-                        left: 10px;
-                        }
-                      .container {
-                       --card-secondary-font-size: 13.5px;
-                       --card-secondary-font-weight: bolder;
+                      {% include 'bubble_card_text.jinja' %}
                     .: |
-                      ha-card { 
-                        background-color: rgba(255,255,255,0) }};
-                      }  
+                      {% include 'mushroom_ha_card_transparent.jinja' %}
             card_mod:
               style:
                 .: |
-                  ha-card { 
-                      {% if is_state('fan.ac_switch','on') and is_state_attr('climate.ac_fan','fan_mode', 'low')%}
-                      background-color: white;
-                      --primary-text-color: #171717;
-                      {% else %} background-color: rgba(var(--rgb-primary-text-color), 0.05);
-                      {% endif %}
-                      }
-                  ha-card:hover {
-                      {% if is_state('fan.ac_switch','on') and is_state_attr('climate.ac_fan','fan_mode', 'low')%}
-                      {% else %} 
-                      background-color: rgba(var(--rgb-primary-text-color), 0.1);
-                      {% endif %}
-                  }  
+                  {% set entity = 'sensor.ac_fan_mode'%}
+                  {% set state_on = 'low' %}
+
+                  {% include 'bubble_card_stack.jinja' %}
           - type: custom:vertical-stack-in-card
             cards:
               - type: custom:mushroom-template-card
@@ -893,23 +692,9 @@ cards:
                 card_mod:
                   style:
                     mushroom-shape-icon$: |
-                      .shape {
-                        --shape-color: none !important;
-                        --icon-symbol-size:28px;
-                        padding-right: 100px;
-
-                      }
+                      {% include 'bubble_card_icon.jinja' %}
                     .: |
-                      ha-card { 
-                        background-color: rgba(255,255,255,0) ;
-                      }  
-                      ha-state-icon {
-                          {% if is_state('fan.ac_switch','on') and is_state_attr('climate.ac_fan','fan_mode', 'mid')%}
-                          color: #171717;
-                          {% else %} color: rgba(var(--rgb-primary-text-color), 1);
-                          {% endif %}
-                        
-                      }
+                      {% include 'mushroom_ha_card_transparent.jinja' %}
               - type: custom:mushroom-template-card
                 primary: Средняя
                 secondary: ""
@@ -934,34 +719,16 @@ cards:
                 card_mod:
                   style:
                     mushroom-state-info$: |
-                      .secondary {
-                        position: absolute;
-                        top: -10% !important;
-                        left: 10px;
-                        }
-                      .container {
-                       --card-secondary-font-size: 13.5px;
-                       --card-secondary-font-weight: bolder;
+                      {% include 'bubble_card_text.jinja' %}
                     .: |
-                      ha-card { 
-                        background-color: rgba(255,255,255,0) }};
-                      }  
+                      {% include 'mushroom_ha_card_transparent.jinja' %}
             card_mod:
               style:
                 .: |
-                  ha-card { 
-                      {% if is_state('fan.ac_switch','on') and is_state_attr('climate.ac_fan','fan_mode', 'mid')%}
-                      background-color: white;
-                      --primary-text-color: #171717;
-                      {% else %} background-color: rgba(var(--rgb-primary-text-color), 0.05);
-                      {% endif %}
-                      }
-                  ha-card:hover {
-                      {% if is_state('fan.ac_switch','on') and is_state_attr('climate.ac_fan','fan_mode', 'mid')%}
-                      {% else %} 
-                      background-color: rgba(var(--rgb-primary-text-color), 0.1);
-                      {% endif %}
-                  }  
+                  {% set entity = 'sensor.ac_fan_mode'%}
+                  {% set state_on = 'mid' %}
+
+                  {% include 'bubble_card_stack.jinja' %}
           - type: custom:vertical-stack-in-card
             cards:
               - type: custom:mushroom-template-card
@@ -988,23 +755,9 @@ cards:
                 card_mod:
                   style:
                     mushroom-shape-icon$: |
-                      .shape {
-                        --shape-color: none !important;
-                        --icon-symbol-size:28px;
-                        padding-right: 100px;
-
-                      }
+                      {% include 'bubble_card_icon.jinja' %}
                     .: |
-                      ha-card { 
-                        background-color: rgba(255,255,255,0) ;
-                      }  
-                      ha-state-icon {
-                          {% if is_state('fan.ac_switch','on') and is_state_attr('climate.ac_fan','fan_mode', 'high')%}
-                          color: #171717;
-                          {% else %} color: rgba(var(--rgb-primary-text-color), 1);
-                          {% endif %}
-                        
-                      }
+                      {% include 'mushroom_ha_card_transparent.jinja' %}
               - type: custom:mushroom-template-card
                 primary: Высокая
                 secondary: ""
@@ -1029,34 +782,16 @@ cards:
                 card_mod:
                   style:
                     mushroom-state-info$: |
-                      .secondary {
-                        position: absolute;
-                        top: -10% !important;
-                        left: 10px;
-                        }
-                      .container {
-                       --card-secondary-font-size: 13.5px;
-                       --card-secondary-font-weight: bolder;
+                      {% include 'bubble_card_text.jinja' %}
                     .: |
-                      ha-card { 
-                        background-color: rgba(255,255,255,0) }};
-                      }  
+                      {% include 'mushroom_ha_card_transparent.jinja' %}
             card_mod:
               style:
                 .: |
-                  ha-card { 
-                      {% if is_state('fan.ac_switch','on') and is_state_attr('climate.ac_fan','fan_mode', 'high')%}
-                      background-color: white;
-                      --primary-text-color: #171717;
-                      {% else %} background-color: rgba(var(--rgb-primary-text-color), 0.05);
-                      {% endif %}
-                      }
-                  ha-card:hover {
-                      {% if is_state('fan.ac_switch','on') and is_state_attr('climate.ac_fan','fan_mode', 'high')%}
-                      {% else %} 
-                      background-color: rgba(var(--rgb-primary-text-color), 0.1);
-                      {% endif %}
-                  }  
+                  {% set entity = 'sensor.ac_fan_mode'%}
+                  {% set state_on = 'high' %}
+
+                  {% include 'bubble_card_stack.jinja' %}
         columns: 4
       - type: custom:bubble-card
         card_type: separator
@@ -1093,23 +828,9 @@ cards:
                 card_mod:
                   style:
                     mushroom-shape-icon$: |
-                      .shape {
-                        --shape-color: none !important;
-                        --icon-symbol-size:28px;
-                        padding-right: 100px;
-
-                      }
+                      {% include 'bubble_card_icon.jinja' %}
                     .: |
-                      ha-card { 
-                        background-color: rgba(255,255,255,0) ;
-                      }  
-                      ha-state-icon {
-                          {% if is_state('automation.konditsioner_vkl_vykl_temp', 'on') %} 
-                          color: #171717;
-                          {% else %} color: rgba(var(--rgb-primary-text-color), 1);
-                          {% endif %}
-                        
-                      }
+                      {% include 'mushroom_ha_card_transparent.jinja' %}
               - type: custom:mushroom-template-card
                 entity: automation.konditsioner_vkl_vykl_temp
                 primary: Мониторинг
@@ -1130,42 +851,37 @@ cards:
                 card_mod:
                   style:
                     mushroom-state-info$: |
-                      .secondary {
-                        position: absolute;
-                        top: -10% !important;
-                        left: 10px;
-                        }
-                      .container {
-                       --card-secondary-font-size: 13.5px;
-                       --card-secondary-font-weight: bolder;
+                      {% include 'bubble_card_text.jinja' %}
                     .: |
-                      ha-card { 
-                        background-color: rgba(255,255,255,0) }};
-                      }  
+                      {% include 'mushroom_ha_card_transparent.jinja' %}
             card_mod:
               style:
                 .: |
-                  ha-card { 
-                      {% if is_state('automation.konditsioner_vkl_vykl_temp', 'on') %} 
-                      background-color: white;
-                      --primary-text-color: #171717;
-                      {% else %} background-color: rgba(var(--rgb-primary-text-color), 0.05);
-                      {% endif %}
-                      }
-                  ha-card:hover {
-                      {% if is_state('automation.konditsioner_vkl_vykl_temp', 'on') %} 
-                      {% else %} 
-                      background-color: rgba(var(--rgb-primary-text-color), 0.1);
-                      {% endif %}
-                  }  
+                  {% set entity = 'automation.konditsioner_vkl_vykl_temp'%}
+                  {% set state_on = 'on' %}
+
+                  {% include 'bubble_card_stack.jinja' %}
         columns: 4
     grid_options:
       columns: full
   - type: heading
     icon: mdi:air-conditioner
-    heading: 2.0rc
+    heading: "3.0"
     heading_style: title
     visibility:
       - condition: state
         entity: "1233"
         state: "12121"
+  - type: markdown
+    content: |+
+      ** 3.0 **
+
+      1. Новый дизайн
+
+
+
+    visibility:
+      - condition: state
+        entity: "1233"
+        state: "12121"
+    text_only: true
