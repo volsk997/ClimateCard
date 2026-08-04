@@ -20,7 +20,7 @@ button_type: name
 styles: |
   #root {
     border: 1px solid rgba(var(--rgb-primary-text-color),0.1);
-    background: rgba(255, 255, 255, 0.1);
+    background: rgba(255, 255, 255, 0.1); 
     }
 sub_button:
   main: []
@@ -38,6 +38,21 @@ cards:
           action: none
         icon: mdi:air-conditioner
       - type: spacer
+      - type: template
+        entity: climate.ac_fan
+        double_tap_action:
+          action: none
+        tap_action:
+          action: more-info
+        hold_action:
+          action: none
+        icon: mdi:information
+        card_mod:
+          style:
+            .: |
+              {% set hover = 'true' %}
+              {% set stating = 'false' %}
+              {% include 'chip_settings_style.jinja' %}
       - type: back
         card_mod:
           style:
@@ -47,7 +62,7 @@ cards:
               {% include 'chip_settings_style.jinja' %}
     card_mod:
       style:
-        mushroom-back-chip:nth-child(3)$: |
+        mushroom-back-chip:last-child$: |
           ha-state-icon {
             --card-mod-icon: mdi:close;
           }
@@ -102,6 +117,70 @@ cards:
       - type: conditional
         conditions:
           - condition: state
+            entity: fan.ac_switch
+            state: "on"
+        card:
+          type: custom:mushroom-template-card
+          features_position: bottom
+          entity: climate.ac_fan
+          grid_options:
+            columns: 12
+            rows: auto
+          icon: mdi:snowflake
+          color: |-
+            {% if is_state(entity, 'cool')%} white
+            {% else %} disabled
+            {% endif %}
+          tap_action:
+            action: perform-action
+            perform_action: climate.set_hvac_mode
+            target:
+              entity_id: climate.ac_fan
+            data:
+              hvac_mode: cool
+          vertical: true
+          icon_tap_action:
+            action: none
+          card_mod:
+            style: |
+              ha-card {
+                zoom: 1.5;
+                background: none;
+              }
+      - type: conditional
+        conditions:
+          - condition: state
+            entity: fan.ac_switch
+            state: "on"
+        card:
+          type: custom:mushroom-template-card
+          features_position: bottom
+          entity: climate.ac_fan
+          grid_options:
+            columns: 12
+            rows: auto
+          icon: mdi:fire
+          color: |-
+            {% if is_state(entity, 'heat')%} white
+            {% else %} disabled
+            {% endif %}
+          tap_action:
+            action: perform-action
+            perform_action: climate.set_hvac_mode
+            target:
+              entity_id: climate.ac_fan
+            data:
+              hvac_mode: heat
+          vertical: true
+          card_mod:
+            style: |
+              ha-card {
+                zoom: 1.5;
+                background: none;
+              }
+      - type: conditional
+        conditions:
+          - condition: state
             entity: sensor.ble_temperature_a4c1387e6730
             state_not: unavailable
         card:
@@ -151,70 +230,125 @@ cards:
               zoom: 1.5;
               background: none;
             }
-      - type: conditional
-        conditions:
-          - condition: state
-            entity: fan.ac_switch
-            state: "on"
-        card:
-          type: custom:mushroom-template-card
-          features_position: bottom
-          entity: climate.ac_fan
-          grid_options:
-            columns: 12
-            rows: auto
-          icon: mdi:fire
-          color: |-
-            {% if is_state(entity, 'heat')%} white
-            {% else %} disabled
-            {% endif %}
-          tap_action:
-            action: perform-action
-            perform_action: climate.set_hvac_mode
-            target:
-              entity_id: climate.ac_fan
-            data:
-              hvac_mode: heat
-          vertical: true
-          card_mod:
-            style: |
-              ha-card {
-                zoom: 1.5;
-                background: none;
-              }
-      - type: conditional
-        conditions:
-          - condition: state
-            entity: fan.ac_switch
-            state: "on"
-        card:
-          type: custom:mushroom-template-card
-          features_position: bottom
-          entity: climate.ac_fan
-          grid_options:
-            columns: 12
-            rows: auto
-          icon: mdi:snowflake
-          color: |-
-            {% if is_state(entity, 'cool')%} white
-            {% else %} disabled
-            {% endif %}
-          tap_action:
-            action: perform-action
-            perform_action: climate.set_hvac_mode
-            target:
-              entity_id: climate.ac_fan
-            data:
-              hvac_mode: cool
-          vertical: true
-          icon_tap_action:
-            action: none
-          card_mod:
-            style: |
-              ha-card {
-                zoom: 1.5;
-                background: none;
-              }
+    card_mod:
+      style: |
+        ha-card {
+         background: none !important;
+        }
+  - type: custom:horizontal-stack-in-card
+    cards:
+      - type: custom:mushroom-template-card
+        features_position: bottom
+        entity: sensor.ac_fan_mode
+        grid_options:
+          columns: 12
+          rows: auto
+        icon: mdi:fan-auto
+        color: |-
+          {% if is_state('sensor.ac_fan_mode', 'auto') %} white
+          {% else %} disabled
+          {% endif %}
+        tap_action:
+          action: perform-action
+          perform_action: climate.set_fan_mode
+          target:
+            entity_id: climate.ac_fan
+          data:
+            fan_mode: auto
+        vertical: true
+        icon_tap_action:
+          action: none
+        card_mod:
+          style: |
+            ha-card {
+              zoom: 1.5;
+              background: none;
+            }
+      - type: custom:mushroom-template-card
+        features_position: bottom
+        entity: sensor.ac_fan_mode
+        grid_options:
+          columns: 12
+          rows: auto
+        icon: mdi:fan-speed-1
+        color: |-
+          {% if is_state('sensor.ac_fan_mode', 'low') %} white
+          {% else %} disabled
+          {% endif %}
+        tap_action:
+          action: perform-action
+          perform_action: climate.set_fan_mode
+          target:
+            entity_id: climate.ac_fan
+          data:
+            fan_mode: low
+        vertical: true
+        icon_tap_action:
+          action: none
+        card_mod:
+          style: |
+            ha-card {
+              zoom: 1.5;
+              background: none;
+            }
+      - type: custom:mushroom-template-card
+        features_position: bottom
+        entity: sensor.ac_fan_mode
+        grid_options:
+          columns: 12
+          rows: auto
+        icon: mdi:fan-speed-2
+        color: |-
+          {% if is_state('sensor.ac_fan_mode', 'mid') %} white
+          {% else %} disabled
+          {% endif %}
+        tap_action:
+          action: perform-action
+          perform_action: climate.set_fan_mode
+          target:
+            entity_id: climate.ac_fan
+          data:
+            fan_mode: mid
+        vertical: true
+        icon_tap_action:
+          action: none
+        card_mod:
+          style: |
+            ha-card {
+              zoom: 1.5;
+              background: none;
+            }
+      - type: custom:mushroom-template-card
+        features_position: bottom
+        entity: sensor.ac_fan_mode
+        grid_options:
+          columns: 12
+          rows: auto
+        icon: mdi:fan-speed-3
+        color: |-
+          {% if is_state('sensor.ac_fan_mode', 'high') %} white
+          {% else %} disabled
+          {% endif %}
+        tap_action:
+          action: perform-action
+          perform_action: climate.set_fan_mode
+          target:
+            entity_id: climate.ac_fan
+          data:
+            fan_mode: high
+        vertical: true
+        icon_tap_action:
+          action: none
+        card_mod:
+          style: |
+            ha-card {
+              zoom: 1.5;
+              background: none;
+            }
+    visibility:
+      - condition: state
+        entity: fan.ac_switch
+        state: "on"
     card_mod:
       style: |
         ha-card {
