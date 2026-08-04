@@ -1,8 +1,6 @@
 type: custom:bubble-card
 card_type: pop-up
 hash: "#ac"
-name: Эмби Лампа
-icon: hue:bollard
 margin_top_mobile: auto
 margin_top_desktop: auto
 tap_action:
